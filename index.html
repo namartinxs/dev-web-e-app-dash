@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar de Repositórios</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <header class="topo">
+        <h1>Radar de Repositórios</h1>
+        <form id="form-busca" class="busca" novalidate>
+            <label for="busca-login" class="sr">
+                Usuário do GitHub
+            </label>
+
+            <input id="busca-login" type="text" placeholder="@GitHub" autocomplete="off">
+            <button id="busca-botao" type="submit">Buscar</button>
+            <span id="busca-erro" class="erro-campo"></span>
+        </form>
+    </header>
+
+    <div class="corpo">
+        <nav class="menu" aria-label="Principal">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#colecao">Minha Coleção</a>
+            <a href="#sobre">Sobre</a>
+        </nav>
+
+        <main>
+            <div id="mensagem" class="mensagem" role="status"></div>
+            <section id="dashboard">
+                <h2>Dashboard</h2>
+                <article id="perfil" class="cartao perfil">
+                    <p class="vazio">Busque um usuário do GitHub para começar</p>
+                </article>
+                <div class="indicadores" id="indicadores">
+                    <div class="indicador">
+                        <strong>0</strong>
+                        <span>Repositórios públicos</span>
+                    </div>
+                    <div class="indicador">
+                        <strong>0</strong>
+                        <span>Estrelas somadas</span>
+                    </div>
+                    <div class="indicador">
+                        <strong>0</strong>
+                        <span>Seguidores</span>
+                    </div>
+                    <div class="indicador">
+                        <strong>0</strong>
+                        <span>Na minha coleção</span>
+                    </div>
+                </div>
+
+                <div class="graficos">
+                    <article class="cartao">
+                        <h3>Linguagens mais usadas</h3>
+                        <div id="grafico-linguagens">
+                            <p class="aviso">Sem dados ainda.</p>
+                        </div>
+                    </article>
+                    <article class="cartao">
+                        <h3>Top 5 repositórios</h3>
+                        <label for="top-criterio" class="sr">Critério</label>
+                        <select id="top-criterio">
+                            <option value="estrelas">Por estrelas</option>
+                            <option value="tamanho">Por tamanho</option>
+                            <option value="atualizacao">Por atualização</option>
+                        </select>
+                        <p id="top-aviso" class="aviso"></p>
+                        <div id="grafico-top">
+                            <p class="aviso">Sem dados ainda.</p>
+                        </div>
+                    </article>
+                    <article class="cartao">
+                        <h3>Progresso da coleção</h3>
+                        <div id="grafico-progresso">
+                            <p class="aviso">Sua coleção está vazia.</p>
+                        </div>
+                    </article>
+                </div>
+                <article class="cartao">
+                    <h3>Repositórios</h3>
+
+                    <div class="filtros">
+                        <label class="sr" for="repo-busca">
+                            Buscar por nome
+                        </label>
+                        <input id="repo-busca" type="text" placeholder="Buscar por nome">
+
+                        <label class="sr" for="repo-linguagem">
+                            Linguagem
+                        </label>
+                        <select id="repo-linguagem">
+                            <option value="">Todas as linguagens</option>
+                        </select>
+
+                        <label class="sr" for="repo-ordem">
+                            Ordenar
+                        </label>
+                        <select id="repo-ordem">
+                            <option value="nome">Nome</option>
+                            <option value="estrelas">Estrelas</option>
+                            <option value="atualizacao">Atualização</option>
+                        </select>
+                    </div>
+
+                    <div class="tabela-caixa">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Linguagem</th>
+                                    <th>Estrelas</th>
+                                    <th>Atualizado</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="repo-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="repo-pag" class="paginacao"></div>
+                </article>
+            </section>
+            <section id="colecao">
+                <h2>Minha coleção</h2>
+                <div class="colecao-grid">
+                    <aside class="cartao">
+                        <form id="form-colecao" novalidate="">
+                            <fieldset>
+                                <legend id="col-titulo">Adicionar à coleção</legend>
+                                <label for="col-repo">Repositório</label>
+                                <input id="col-repo" type="text" readonly="" placeholder="Escolha na tabela acima">
+                                <span id="erro-repo" class="erro-campo"></span>
+
+                                <label for="col-status">Status</label>
+                                <select id="col-status">
+                                    <option value="quero estudar">Quero estudar</option>
+                                    <option value="estudando">Estudando</option>
+                                    <option value="concluído">Concluído</option>
+                                </select>
+                                <span id="erro-status" class="erro-campo"></span>
+
+                                <label for="col-prioridade">Prioridade</label>
+                                <select id="col-prioridade">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option selected="">3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                                <span id="erro-prioridade" class="erro-campo"></span>
+
+                                <label for="col-anotacao">Anotação</label>
+                                <textarea id="col-anotacao" rows="4"
+                                    placeholder="O que você quer aprender aqui?"></textarea>
+                                <span id="erro-anotacao" class="erro-campo"></span>
+
+                                <div class="acoes">
+                                    <button type="submit" id="col-salvar">Salvar</button>
+                                    <button type="button" id="col-cancelar" class="secundario"
+                                        hidden="">Cancelar</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </aside>
+                    <div>
+                        <div class="filtros">
+                            <label class="sr" for="col-busca">Buscar na coleção</label>
+                            <input id="col-busca" type="text" placeholder="Buscar na coleção">
+                            <label class="sr" for="col-filtro">Filtrar por status</label>
+                            <select id="col-filtro">
+                                <option value="">Todos os status</option>
+                                <option value="quero estudar">Quero estudar</option>
+                                <option value="estudando">Estudando</option>
+                                <option value="concluído">Concluído</option>
+                            </select>
+                        </div>
+                        <div id="col-lista" class="lista">
+                            <p class="vazio-lista">Nenhum item na coleção.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="sobre">
+                <h2>Sobre</h2>
+                <article class="cartao texto">
+                    <p>Trabalho final da disciplina de Desenvolvimento Web e App, feito por Amanda e Nathalia em uma
+                        semana, de 17/11 a 24/11/2026.</p>
+                    <p>Tecnologias: HTML5 semântico, CSS3 (flexbox, grid, mobile-first) e JavaScript puro (ES6+,
+                        classes, fetch, localStorage).</p>
+                    <p>API: GitHub REST API, <a href="https://docs.github.com/en/rest" target="_blank"
+                            rel="noopener">documentação</a>. Sem autenticação, o limite é de 60 requisições por hora por
+                        IP.</p>
+                </article>
+            </section>
+        </main>
+    </div>
+    <footer>Amanda e Nathalia · Desenvolvimento Web e App · 2026</footer>
+    <script src="/js/config.js"></script>
+    <script src="/js/api/ApiError.js"></script>
+    <script src="/js/api/GitHubApi.js"></script>
+    <script src="/js/modelo/Usuario.js"></script>
+    <script src="/js/modelo/Repositorio.js"></script>
+    <script src="/js/modelo/ItemColecao.js"></script>
+    <script src="/js/servicos/Armazenamento.js"></script>
+    <script src="/js/servicos/GitHubService.js"></script>
+    <script src="/js/servicos/ColecaoService.js"></script>
+    <script src="/js/ui/MensagemUI.js"></script>
+    <script src="/js/ui/PerfilUI.js"></script>
+    <script src="/js/ui/PainelUI.js"></script>
+    <script src="/js/ui/RepositoriosUI.js"></script>
+    <script src="/js/ui/ColecaoUI.js"></script>
+    <script src="/js/app.js"></script>
+    <fg-inspector-overlay-element data-html-editor-overlay="true" data-h2d-ignore="true"></fg-inspector-overlay-element>
+
+</body>
+
+</html>
