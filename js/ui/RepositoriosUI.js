@@ -1,7 +1,8 @@
 class RepositoriosUI {
   #repos = []; #pagina = 1;
-  constructor(aoAdicionar) {
+  constructor(aoAdicionar, jaSalvo = () => false) {
     this.aoAdicionar = aoAdicionar;
+    this.jaSalvo = jaSalvo;
     this.busca = document.getElementById('repo-busca');
     this.ling = document.getElementById('repo-linguagem');
     this.ordem = document.getElementById('repo-ordem');
@@ -38,15 +39,20 @@ class RepositoriosUI {
     lista.slice(inicio, inicio + CONFIG.POR_PAGINA).forEach((r) => {
       const tr = criar('tr');
       const nome = criar('td'); const a = criar('a', r.nome); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; nome.append(a);
-      const btn = criar('button', 'Adicionar à coleção', 'mini'); btn.type = 'button';
-      btn.addEventListener('click', () => this.aoAdicionar(r));
+      const salvo = this.jaSalvo(r);
+      const btn = criar('button', salvo ? 'Salvo na coleção' : 'Adicionar à coleção', 'mini ' + (salvo ? 'salvo' : 'adicionar'));
+      btn.type = 'button';
+      if (salvo) btn.disabled = true;
+      else btn.addEventListener('click', () => this.aoAdicionar(r));
       const acao = criar('td'); acao.append(btn);
       tr.append(nome, criar('td', r.linguagem), criar('td', fmtNum.format(r.estrelas)),
         criar('td', r.atualizadoEm ? fmtData.format(new Date(r.atualizadoEm)) : '-'), acao);
       tbody.append(tr);
     });
-    const ant = criar('button', 'Anterior', 'secundario mini'); ant.type = 'button'; ant.disabled = this.#pagina <= 1;
-    const prox = criar('button', 'Próxima', 'secundario mini'); prox.type = 'button'; prox.disabled = this.#pagina >= total;
+    const ant = criar('button', '←', 'seta'); ant.type = 'button'; ant.disabled = this.#pagina <= 1;
+    ant.setAttribute('aria-label', 'Página anterior');
+    const prox = criar('button', '→', 'seta'); prox.type = 'button'; prox.disabled = this.#pagina >= total;
+    prox.setAttribute('aria-label', 'Próxima página');
     ant.addEventListener('click', () => { this.#pagina--; this.render(); });
     prox.addEventListener('click', () => { this.#pagina++; this.render(); });
     pag.append(ant, criar('span', 'Página ' + this.#pagina + ' de ' + total), prox);

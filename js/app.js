@@ -5,8 +5,11 @@ class App {
     this.msg = new MensagemUI();
     this.perfil = new PerfilUI();
     this.painel = new PainelUI();
-    this.colecaoUI = new ColecaoUI(this.colecao, this.msg, () => this.painel.atualizar(null, null, this.colecao.listar()));
-    this.tabela = new RepositoriosUI((r) => this.colecaoUI.escolher(r));
+    this.colecaoUI = new ColecaoUI(this.colecao, this.msg, () => {
+      this.painel.atualizar(null, null, this.colecao.listar());
+      this.tabela.render();
+    });
+    this.tabela = new RepositoriosUI((r) => this.colecaoUI.escolher(r), (r) => this.colecao.existe(r.dono, r.nome));
     this.campo = document.getElementById('busca-login');
     this.erro = document.getElementById('busca-erro');
     document.getElementById('form-busca').addEventListener('submit', (e) => { e.preventDefault(); this.buscar(this.campo.value); });
@@ -29,7 +32,21 @@ class App {
       this.msg.carregando(false);
     }
   }
+  // Destaca no menu lateral o link da seção aberta.
+  marcarMenu() {
+    const links = document.querySelectorAll('.menu-links a');
+    const marcar = () => {
+      const alvo = location.hash || '#dashboard';
+      links.forEach((a) => {
+        if (a.getAttribute('href') === alvo) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+    };
+    window.addEventListener('hashchange', marcar);
+    marcar();
+  }
   iniciar() {
+    this.marcarMenu();
     this.perfil.vazio();
     this.painel.atualizar(null, [], this.colecao.listar());
     this.tabela.definir([]);

@@ -55,6 +55,15 @@ class ColecaoUI {
       else this.msg.erro(e.message);
     }
   }
+  // Botão quadrado só com ícone; o texto fica no aria-label e no title.
+  #botaoIcone(classe, icone, rotulo) {
+    const b = criar('button', null, 'icone-btn ' + classe);
+    b.type = 'button'; b.title = rotulo; b.setAttribute('aria-label', rotulo);
+    const desenho = criar('span', null, 'icone ' + icone);
+    desenho.setAttribute('aria-hidden', 'true');
+    b.append(desenho);
+    return b;
+  }
   render() {
     limpar(this.lista);
     const termo = this.busca.value.trim().toLowerCase();
@@ -65,25 +74,27 @@ class ColecaoUI {
       const c = criar('article', null, 'item');
       const sel = criar('select');
       sel.setAttribute('aria-label', 'Status de ' + i.nome);
-      CONFIG.STATUS.forEach((s) => { const o = criar('option', s); o.value = s; sel.append(o); });
+      CONFIG.STATUS.forEach((s) => { const o = criar('option', s.charAt(0).toUpperCase() + s.slice(1)); o.value = s; sel.append(o); });
       sel.value = i.status;
       sel.addEventListener('change', () => {
         try { this.servico.mudarStatus(i.id, sel.value); this.msg.sucesso('Status atualizado!'); this.render(); this.aoMudar(); }
         catch (e) { this.msg.erro(e.message); }
       });
-      const ed = criar('button', 'Editar', 'secundario mini'); ed.type = 'button';
+      const ed = this.#botaoIcone('editar', 'i-lapis', 'Editar ' + i.nome);
       ed.addEventListener('click', () => this.editar(i));
-      const ex = criar('button', 'Excluir', 'perigo mini'); ex.type = 'button';
+      const ex = this.#botaoIcone('excluir', 'i-lixeira', 'Excluir ' + i.nome);
       ex.addEventListener('click', () => {
-        if (!confirm('Excluir "' + i.nome + '" da coleção?')) return;
+        if (!confirm('Excluir \"' + i.nome + '\" da coleção?')) return;
         this.servico.excluir(i.id);
         if (this.#editando && this.#editando.id === i.id) this.resetar();
         this.msg.sucesso('Item excluído.'); this.render(); this.aoMudar();
       });
-      const linha = criar('div', null, 'linha');
-      linha.append(criar('span', 'Prioridade ' + i.prioridade, 'etiqueta'), criar('span', i.linguagem, 'etiqueta'));
-      const acoes = criar('div', null, 'linha'); acoes.append(ed, ex);
-      c.append(criar('h4', i.dono + '/' + i.nome), criar('p', i.anotacao), linha, sel, acoes);
+      const etiquetas = criar('div', null, 'etiquetas');
+      etiquetas.append(criar('span', 'Prioridade ' + i.prioridade, 'etiqueta'), criar('span', i.linguagem, 'etiqueta'));
+      const info = criar('div', null, 'item-info');
+      info.append(criar('h4', i.dono + '/' + i.nome), criar('p', i.anotacao), etiquetas, sel);
+      const acoes = criar('div', null, 'item-acoes'); acoes.append(ex, ed);
+      c.append(info, acoes);
       this.lista.append(c);
     });
   }

@@ -17,20 +17,26 @@ class PainelUI {
     limpar(alvo);
     const estrelas = this.#repos.reduce((s, r) => s + r.estrelas, 0);
     const dados = [
-      ['Repositórios públicos', this.usuario ? this.usuario.reposPublicos : 0],
-      ['Estrelas somadas', estrelas],
-      ['Seguidores', this.usuario ? this.usuario.seguidores : 0],
-      ['Na minha coleção', qtdColecao],
+      ['Repositórios públicos', this.usuario ? this.usuario.reposPublicos : 0, 'i-livro', 'q-rosa'],
+      ['Estrelas somadas', estrelas, 'i-estrela', 'q-amarelo'],
+      ['Seguidores', this.usuario ? this.usuario.seguidores : 0, 'i-pessoas', 'q-azul'],
+      ['Na minha coleção', qtdColecao, 'i-marcador', 'q-verde'],
     ];
-    dados.forEach(([rotulo, valor]) => {
+    dados.forEach(([rotulo, valor, icone, cor]) => {
       const c = criar('div', null, 'indicador');
-      c.append(criar('strong', fmtNum.format(valor)), criar('span', rotulo));
+      const quadro = criar('span', null, 'quadro ' + cor);
+      const desenho = criar('span', null, 'icone ' + icone);
+      desenho.setAttribute('aria-hidden', 'true');
+      quadro.append(desenho);
+      const texto = criar('div', null, 'indicador-texto');
+      texto.append(criar('strong', fmtNum.format(valor)), criar('span', rotulo));
+      c.append(quadro, texto);
       alvo.append(c);
     });
   }
   #linhaBarra(rotulo, pct, texto, classe) {
     const l = criar('div', null, 'barra-linha');
-    l.append(criar('div', rotulo + ' · ' + texto));
+    l.append(criar('div', rotulo + ' - ' + texto));
     const t = criar('div', null, 'barra-trilho');
     const b = criar('div', null, 'barra ' + (classe || ''));
     b.style.width = Math.max(pct, 2) + '%';
@@ -79,7 +85,7 @@ class PainelUI {
       b.style.width = (n / itens.length) * 100 + '%';
       b.style.borderRadius = '0';
       trilho.append(b);
-      legenda.append(criar('span', s + ': ' + n));
+      legenda.append(criar('span', s + ': ' + n, classes[s]));
     });
     alvo.append(trilho, legenda);
   }

@@ -9,7 +9,7 @@ class Armazenamento{
         }
     }
 
-    gravar(chave,padrao){
+    gravar(chave,valor){
         try{
             localStorage.setItem(chave,JSON.stringify(valor));
             return true;
