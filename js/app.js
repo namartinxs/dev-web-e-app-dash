@@ -32,7 +32,6 @@ class App {
       this.msg.carregando(false);
     }
   }
-  // Destaca no menu lateral o link da seção aberta.
   marcarMenu() {
     const links = document.querySelectorAll('.menu-links a');
     const marcar = () => {

@@ -1,4 +1,4 @@
-// Constantes e utilitários globais.
+// utils
 const CONFIG = {
   API_URL: 'https://api.github.com',
   CACHE_MINUTOS: 10,
@@ -9,7 +9,7 @@ const CONFIG = {
   STATUS: ['quero estudar', 'estudando', 'concluído'],
 };
 
-// Cria um elemento usando só createElement e textContent.
+// Criacao de elementos
 function criar(tag, texto, classe) {
   const e = document.createElement(tag);
   if (texto !== undefined && texto !== null) e.textContent = texto;
